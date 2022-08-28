@@ -29,7 +29,6 @@ void setup() {
 void loop() {
   if(Serial1.available() > 0){ // Checks whether data is comming from the serial port
     digitalWrite(LEDPIN, HIGH);
-    //Serial.print("help");
     float h = dht.readHumidity();
     float t = dht.readTemperature();
     float f = dht.readTemperature(true);
@@ -65,5 +64,4 @@ void loop() {
     digitalWrite(LEDPIN, LOW);
     delay(1000);
  }
-  //Serial.print("no help");
 }
