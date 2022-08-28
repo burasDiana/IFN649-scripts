@@ -16,7 +16,7 @@ def on_connect(client, userdata, flags, rc):
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
-    text = msg.payload.decode('utf-8').strip('\r\n')
+    #text = msg.payload.decode('utf-8').strip('\r\n')
     #print("Received data:")
     #print(text)
     print(msg.topic+" "+str(msg.payload))
