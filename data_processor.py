@@ -7,8 +7,10 @@ import paho.mqtt.publish as publish
 
 msg_ok = "Plant is doing all right :)"
 msg_hot = "Temperature too high!"
+msg_little_hot = "Warning, temperature getting hot!"
 msg_cold = "Temperature too low!"
 msg_light_low = "Light level too low!"
+msg_light_little_low = "Plant could use more light!"
 msg_light_high = "Light level too high!"
 msg_hum_high = "Humidity level high!"
 msg_hum_low = "Humidity level low!"
@@ -32,15 +34,15 @@ HUM_LOW = range(0,50)
 HID_MAX = 34
 HID_MED = 29
 
-T_HIGH_DAY = 28
+T_HIGH_DAY = 26
 T_MED_DAY = 20
 T_LOW_NIGHT = 10
 
-L_HIGH = 400
-L_NORMAL_DAY = range(100,340)
+L_HIGH = 500
+L_NORMAL_DAY = range(200,450)
 L_NORMAL_NIGHT = range(60,240)
 
-ser = serial.Serial("/dev/rfcomm1", 9600)
+ser = serial.Serial("/dev/rfcomm0", 9600)
 ser.write(str.encode('Start\r\n'))
 
 #based on status we send 0 = green, 1 = red, or 2 = yellow representing the statuses
@@ -81,8 +83,11 @@ while True:
                 else:
                     print("status_ok, but warnings, send yellow")
                     publish.single("status",2,hostname=EC2_IP)
-                    publish.single("notify",msg_water,hostname=EC2_IP)
-                    publish.single("notify",msg_hum_high,hostname=EC2_IP)
+                    if t > (T_HIGH_DAY -2):
+                        publish.single("notify",msg_little_hot,hostname=EC2_IP)
+                    else:
+                        publish.single("notify",msg_water,hostname=EC2_IP)
+                        publish.single("notify",msg_light_little_low,hostname=EC2_IP)
             if TOD == 1:
                 if t < T_LOW_NIGHT or t > T_HIGH_DAY or hid > HID_MAX or ldr not in L_NORMAL_NIGHT or h not in HUM_NORMAL:
                     print("status_bad, send red, night")

@@ -4,7 +4,7 @@ import time
 import string
 
 EC2_IP = "13.127.250.10"
-RF_COMM = "/dev/rfcomm1"
+RF_COMM = "/dev/rfcomm0"
 
 # reading and writing data from and to arduino serially.
 # rfcomm0 -> this could be different
@@ -22,10 +22,6 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     
     text = msg.payload.decode('utf-8').strip('\r\n')
-    
-
-    #print(msg.topic+" "+ str(msg.payload))
-    #ser.write(msg.payload)
     if (msg.topic == "status"):
         print(msg.topic+" "+ text)
         ser.write(str.encode(text + '\r\n'))
